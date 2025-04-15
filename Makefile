@@ -3,25 +3,27 @@ CC = gcc
 CFLAGS = -Wall -Wextra -Werror
 INCLUDES = ./includes
 LIBFT_DIR = ./libft
-SRC_DIR		= ./src/
 LIBFT = $(LIBFT_DIR)/libft.a
 LIBFT_INC = -I$(INCLUDES)
 
-# Source files and object files
-SRC_FILES	= minishell
-SRC = $(addprefix $(SRC_DIR), $(addsuffix .c, $(SRC_FILES)))
-OBJ = $(SRC:.c=.o)
+# Directories
+SRC_DIR = ./src
+OBJ_DIR = ./obj
+
+# Find all .c files recursively under SRC_DIR
+SRC = $(shell find $(SRC_DIR) -name "*.c")
+OBJ = $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRC))
 
 # Main target
 all: $(NAME)
 
-# To link with the required internal Linux API:
 $(NAME): $(OBJ) $(LIBFT)
-	$(CC) $(OBJ) $(LIBFT) -lreadline -o $(NAME)
+	$(CC) $(CFLAGS) $(OBJ) $(LIBFT) -lreadline -o $(NAME)
 
-# Compile object files
-%.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@ $(LIBFT_INC)
+# Rule to compile each .o from .c
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) -I$(INCLUDES) -c $< -o $@
 
 # Compile libft
 $(LIBFT):
@@ -29,14 +31,13 @@ $(LIBFT):
 
 # Clean object files
 clean:
-	rm -f $(OBJ)
+	rm -rf $(OBJ_DIR)
 	make clean -C $(LIBFT_DIR)
 
-# Clean object files and executables
+# Clean all
 fclean: clean
 	rm -f $(NAME)
 	make fclean -C $(LIBFT_DIR)
 
-# Recompile everything
+# Rebuild everything
 re: fclean all
-	make re -C $(LIBFT_DIR)
