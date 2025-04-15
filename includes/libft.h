@@ -57,7 +57,7 @@ void			ft_print_decimal(int dec, int *leng);
 void			ft_un_decimal(unsigned int num, int *leng);
 void			ft_print_num_hex(unsigned int num, const char fmt, int *leng);
 void			ft_puthex(uintptr_t num, int *leng, int is_upper);
-void			ft_free_matrix(void **matrix, int size);
+void			ft_free_matrix(void **matrix);
 
 size_t			ft_strlen(const char *s);
 size_t			ft_strlcpy(char *dst, const char *src, size_t dstsize);

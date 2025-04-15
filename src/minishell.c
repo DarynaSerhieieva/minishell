@@ -14,7 +14,7 @@ int	main(void)
 		}
 		if (*rl)
 			add_history(rl);
-		printf("%s\n", rl);
+		execute_command(rl);
 		free(rl);
 	}
 	return (0);
