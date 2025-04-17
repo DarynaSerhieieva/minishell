@@ -1,21 +1,30 @@
 #include <minishell.h>
 
-int	main(void)
+static void	minishell_routin(t_shell *shell)
 {
-	char	*rl;
 
 	while (1)
 	{
-		rl = readline("minishell > ");
-		if (!rl)
+		shell->input_line = readline("minishell > ");
+		if (!shell->input_line)
 		{
 			printf("exit\n");
 			break ;
 		}
-		if (*rl)
-			add_history(rl);
-		execute_command(rl);
-		free(rl);
+		if (*shell->input_line)
+			add_history(shell->input_line);
+		execute_command(shell);
+		free(shell->input_line);
 	}
+}
+
+
+int	main(void)
+{
+	t_shell	shell;
+
+
+	ft_memset(&shell, 0, sizeof(t_shell));
+	minishell_routin(&shell);
 	return (0);
 }

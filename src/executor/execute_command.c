@@ -2,25 +2,14 @@
 
 extern char	**environ;
 
-void	execute_command(char *input)
+static void	fork_routine(char *cmd_path, t_shell *shell)
 {
-	char	**args;
-	char	*cmd_path;
 	pid_t	pid;
 
-	args = ft_split(input, ' ');
-	if (!args || !args[0])
-		return ;
-	cmd_path = find_cmd_path(args[0]);
-	if (!cmd_path)
-	{
-		printf("%s: command not found\n", args[0]);
-		return ;
-	}
 	pid = fork();
 	if (pid == 0)
 	{
-		execve(cmd_path, args, environ);
+		execve(cmd_path, shell->args, environ);
 		perror("execve failed");
 		exit(EXIT_FAILURE);
 	}
@@ -28,6 +17,22 @@ void	execute_command(char *input)
 	{
 		wait(NULL);
 	}
+}
+
+void	execute_command(t_shell *shell)
+{
+	char	*cmd_path;
+
+	shell->args = ft_split(shell->input_line, ' ');
+	if (!shell->args || !shell->args[0])
+		return ;
+	cmd_path = find_cmd_path(shell->args[0]);
+	if (!cmd_path)
+	{
+		printf("%s: command not found\n", shell->args[0]);
+		return ;
+	}
+	fork_routine(cmd_path, shell);
 	free(cmd_path);
-	ft_free_matrix((void **)args);
+	ft_free_matrix((void **)shell->args);
 }
